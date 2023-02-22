@@ -3,6 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\StudentResource;
+use App\Http\Resources\CourseResource;
 
 class GradeResource extends JsonResource
 {
@@ -14,6 +16,12 @@ class GradeResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'name' => $this->name,
+            'maxDegree' => $this->maxDegree,
+            'course' => (new CourseResource($this->course)),
+            'students' => StudentResource::collection($this->students),
+            'students_count' => $this->student()->count()
+        ];
     }
 }

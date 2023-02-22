@@ -26,6 +26,7 @@ class StudentRequest extends FormRequest
         return [
         'name' => 'required|string|max:50',
         'email' => 'required|email',
+        'birth' => 'required|date',
         'level_id' => 'exists:\App\Models\Level,id'
         ];
     }

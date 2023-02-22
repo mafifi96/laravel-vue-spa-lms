@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\StudentResource;
 
 class LevelResource extends JsonResource
 {
@@ -14,6 +15,12 @@ class LevelResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'name' => $this->name,
+            'code' => $this->code,
+            'description' => $this->description,
+            'students' => StudentResource::collection($this->students),
+            'students_count' => $this->student()->count()
+        ];
     }
 }

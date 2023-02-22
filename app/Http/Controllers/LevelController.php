@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LevelRequest;
 use Illuminate\Http\Request;
+use App\Models\Level;
 
 class LevelController extends Controller
 {
@@ -13,7 +15,7 @@ class LevelController extends Controller
      */
     public function index()
     {
-        //
+        return sendData(Level::with('students')->get()->loadCount('students'));
     }
 
     /**
@@ -22,9 +24,11 @@ class LevelController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(LevelRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        Level::create($validated);
     }
 
     /**
@@ -33,9 +37,9 @@ class LevelController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Level $level)
     {
-        //
+        return sendData($level->loadCount('students'));
     }
 
     /**
@@ -45,9 +49,13 @@ class LevelController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(LevelRequest $request, Level $level)
     {
-        //
+        $validated = $request->validated();
+
+        $level->update($validated);
+
+        return sendData(message: "level updated successfully");
     }
 
     /**
@@ -56,8 +64,10 @@ class LevelController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Level $level)
     {
-        //
+        $level->delete();
+
+        return sendData(message: "level deleted successfully");
     }
 }

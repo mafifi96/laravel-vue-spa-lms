@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Student;
 use Illuminate\Http\Request;
+use App\Http\Requests\StudentRequest;
+use App\Models\Course;
 
 class StudentController extends Controller
 {
@@ -13,7 +16,9 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
+        $students = Student::with(['level'])->get()->loadCount('courses');
+
+        return sendData($students);
     }
 
     /**
@@ -22,9 +27,13 @@ class StudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StudentRequest $request)
     {
-        //
+
+        $validated = $request->validated();
+
+        Student::create(array_merge($validated , ['code' => uid()]));
+
     }
 
     /**
@@ -33,9 +42,9 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Student $student)
     {
-        //
+        return sendData($student->load(['courses:id,name' , 'level:id,name'])->loadCount('courses'));
     }
 
     /**
@@ -45,9 +54,13 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StudentRequest $request, Student $student)
     {
-        //
+        $validated = $request->validated();
+
+        $student->update($validated);
+
+        return sendData();
     }
 
     /**
@@ -56,8 +69,9 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Student $student)
     {
-        //
+        $student->delete();
     }
+
 }

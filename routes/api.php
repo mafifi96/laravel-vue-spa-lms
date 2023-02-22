@@ -1,8 +1,15 @@
 <?php
 
-use App\Http\Controllers\CourseController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\{
+    StudentController,
+    CourseController,
+    GradeController,
+    LevelController
+};
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +28,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('courses' , CourseController::class);
+Route::apiResource('grades' , GradeController::class);
+Route::apiResource('students' , StudentController::class);
+Route::apiResource('levels' , LevelController::class);
+
+Route::post('/course/enroll' , [CourseController::class , 'enroll']);
+Route::post('/course/disenroll' , [CourseController::class , 'disenroll']);

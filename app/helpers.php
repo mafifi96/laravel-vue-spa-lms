@@ -11,3 +11,28 @@ function uid(){
 
     uid();
 }
+
+
+function sendData(
+    $data = [] ,
+    $status = 200 ,
+    $message = null)
+{
+    return response()->json([
+
+        'data' => $data ,
+        'message' => $message] ,
+        $status);
+}
+
+function sendError(
+    $errors = [] ,
+    $status = 500 ,
+    $message = null)
+{
+
+    return response()->json([
+        'errors' => $errors ,
+        'message' => $message] ,
+        $status);
+}

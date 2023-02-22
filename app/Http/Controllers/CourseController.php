@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CourseRequest;
 use App\Http\Resources\CourseResource;
+use App\Models\Student;
+use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
@@ -18,7 +18,7 @@ class CourseController extends Controller
     public function index()
     {
 
-        return CourseResource::collection(Course::all());
+        //return CourseResource::collection(Course::all());
 
         return response()->json(['courses' => Course::withCount(['students','grades'])->get()]);
     }
@@ -35,7 +35,7 @@ class CourseController extends Controller
 
         $course = Course::create(array_merge($validated , ['code' => uid()]));
 
-        return response()->json(['courseId' => $course->id],200);
+        return sendData(data : $course , message: "course stored successfully");
     }
 
     /**
@@ -46,9 +46,9 @@ class CourseController extends Controller
      */
     public function show($id)
     {
-        $course = Course::findOrFail($id)->loadCount(['students','grades']);
+        $course = Course::findOrFail($id)->load(['students' , 'grades'])->loadCount(['students','grades']);
 
-        return response()->json(['course' => $course ]);
+        return sendData($course);
     }
 
     /**
@@ -65,8 +65,7 @@ class CourseController extends Controller
 
         $course->update($validated);
 
-        return response()->json([] , 200);
-
+        return sendData(message: "updated successfully");
     }
 
     /**
@@ -79,4 +78,30 @@ class CourseController extends Controller
     {
         $course->delete();
     }
+
+    public function enroll(Request $request)
+    {
+        $course = Course::findOrFail($request->course_id);
+
+        $student = Student::findOrFail($request->student_id);
+
+        $course->students()->sync($student);
+
+        return sendData(message:"enrolled successfully");
+
+    }
+
+    public function disenroll(Request $request)
+    {
+        $course = Course::findOrFail($request->course_id);
+
+        $student = Student::findOrFail($request->student_id);
+
+        $course->students()->detach($student);
+
+        return sendData(message:"the student is no longer in this course");
+
+    }
+
+
 }
