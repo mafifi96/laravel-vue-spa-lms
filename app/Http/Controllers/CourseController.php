@@ -46,13 +46,10 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        /* $course = Course::findOrFail($id)->load(['students' , 'grades'])->loadCount(['students','grades']);
 
-        return sendData($course);
-         */
+        $students = Student::whereBelongsTo($course)->get();
 
-
-         return sendData(['course' => $course ]);
+         return sendData(['course' => $course  , 'students' => $students]);
     }
 
     /**

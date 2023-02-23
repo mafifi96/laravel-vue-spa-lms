@@ -23,7 +23,7 @@ class Student extends Model
 
    public function grades()
    {
-    return $this->belongsToMany(Grade::class , 'students_grades')->withTimestamps();
+    return $this->hasManyThrough(Grade::class, 'students_grades')->withTimestamps();
    }
 
 
