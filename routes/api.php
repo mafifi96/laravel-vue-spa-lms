@@ -29,15 +29,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
 Route::apiResource('courses' , CourseController::class);
+Route::apiResource('grades' , GradeController::class);
+Route::apiResource('students' , StudentController::class);
+Route::apiResource('levels' , LevelController::class);
+Route::post('/course/enroll' , [CourseController::class , 'enroll']);
+Route::post('/course/disenroll' , [CourseController::class , 'disenroll']);
 
 Route::middleware('auth:sanctum')->group(function(){
-
-    Route::apiResource('grades' , GradeController::class);
-    Route::apiResource('students' , StudentController::class);
-    Route::apiResource('levels' , LevelController::class);
-    Route::post('/course/enroll' , [CourseController::class , 'enroll']);
-    Route::post('/course/disenroll' , [CourseController::class , 'disenroll']);
 
 });
 

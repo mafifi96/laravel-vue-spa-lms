@@ -23,8 +23,10 @@ class StudentsGradesSeeder extends Seeder
         $students = Student::all('id');
 
         $grades->each(function($grade) use ($students){
+
             $grade->students()->syncWithPivotValues($students , ['degree' => fake()->randomElement([40,45,100])]);
 
         });
+
     }
 }

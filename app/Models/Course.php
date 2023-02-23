@@ -11,6 +11,18 @@ class Course extends Model
 {
     use HasFactory;
 
+            /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+
+     protected $casts = [
+        'created_at' => 'datetime:M , d / Y',
+    ];
+
+
+
     protected $guarded = [];
 
     protected $table = 'courses';

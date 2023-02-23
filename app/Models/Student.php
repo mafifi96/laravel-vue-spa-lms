@@ -14,6 +14,17 @@ class Student extends Model
 
     protected $guarded = [];
 
+                /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+
+     protected $casts = [
+        'created_at' => 'datetime:M , d / Y',
+    ];
+
+
    //protected $table = 'students';
 
    public function courses()

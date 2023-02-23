@@ -11,7 +11,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">POS <sup>1</sup></div>
+                <div class="sidebar-brand-text mx-3">LMS <sup>1</sup></div>
             </router-link>
 
             <!-- Divider -->
@@ -32,30 +32,21 @@
                 Interface
             </div>
             <li class="nav-item">
-                <router-link class="nav-link" :to="{name : 'admin.categories'}">
+                <router-link class="nav-link" :to="{name : 'courses'}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Categories</span></router-link>
+                    <span>Courses</span></router-link>
             </li>
             <li class="nav-item">
-                <router-link class="nav-link" :to="{name :'admin.products'}">
+                <router-link class="nav-link" :to="{name :'students'}">
                     <i class="fab fa-product-hunt"></i>
-                    <span>Products</span></router-link>
+                    <span>Students</span></router-link>
             </li>
             <li class="nav-item">
-                <router-link class="nav-link" :to="{name : 'admin.orders'}">
+                <router-link class="nav-link" :to="{name : 'levels'}">
                     <i class="fa fa-shipping-fast"></i>
-                    <span>Orders</span></router-link>
+                    <span>Levels</span></router-link>
             </li>
-            <li class="nav-item">
-                <router-link class="nav-link" :to="{name : 'admin.customers'}">
-                    <i class="fab fa-intercom"></i>
-                    <span>Customers</span></router-link>
-            </li>
-            <li class="nav-item">
-                <router-link class="nav-link" :to="{name : 'admin.supervisors'}">
-                    <i class="fab fa-intercom"></i>
-                    <span>Supervisors</span></router-link>
-            </li>
+
         </ul>
         <!-- End of Sidebar -->
 
@@ -118,7 +109,7 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" @click.prevent="dropdownToggle()" id="userDropdown"
                                 role="button" data-toggle="dropdown">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ AuthUser.name }}</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{  }}</span>
                                 <img class="img-profile rounded-circle" src="/imgs/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
@@ -166,7 +157,7 @@
                 <div class="container my-auto">
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12 ">
-                            <ul class="list-style-type-none d-flex justify-content-center p-0"
+                          <!--   <ul class="list-style-type-none d-flex justify-content-center p-0"
                                 style="list-style: none;">
                                 <li class="m-2"><a class="text-decoration-none font-size-2" style="color: #555"
                                         href="https://www.facebook.com/silent.e3gle"><i
@@ -179,8 +170,9 @@
                                 <li class="m-2"><a class="text-decoration-none font-size-2" style="color: #555"
                                         href="https://wa.me/+201093852164"><i class="fab fa-whatsapp"></i></a></li>
                             </ul>
-                            <p class="text-center text-monospace text-capitalize py-2">developed by &commat;mohamed
-                                afifi</p>
+                             -->
+                            <p class="text-center text-monospace text-capitalize py-2">
+                                LMS System</p>
                         </div>
                     </div>
                 </div>
@@ -195,37 +187,21 @@
 </template>
 
 <script>
-    import {
-        mapActions
-    } from 'vuex'
-    import {
-        mapGetters
-    } from 'vuex'
 
     export default {
-        data: function () {
-            return {
 
-            }
-        },
-        computed: {
-            ...mapGetters({
-                AuthUser: 'user'
-            })
-        },
         methods: {
-            ...mapActions({
-                signout: 'logout'
-            }),
+
             async logout() {
                 await axios.post('/api/logout').then(res => {
                     window.axios.defaults.headers.common = {
                         'Authorization': ''
                     }
-                    this.signout()
+
                     this.$router.push({
                         name: "login"
                     })
+
                 }).catch(err => {
                     console.log(err)
                 })

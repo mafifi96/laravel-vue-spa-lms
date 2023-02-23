@@ -6,6 +6,7 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use App\Http\Requests\StudentRequest;
 use App\Models\Course;
+use Yajra\DataTables\Facades\DataTables;
 
 class StudentController extends Controller
 {
@@ -18,6 +19,7 @@ class StudentController extends Controller
     {
         $students = Student::with(['level'])->get()->loadCount('courses');
 
+        return datatables($students)->make(true);
         return sendData($students);
     }
 

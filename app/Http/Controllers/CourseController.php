@@ -7,6 +7,7 @@ use App\Http\Requests\CourseRequest;
 use App\Http\Resources\CourseResource;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class CourseController extends Controller
 {
@@ -20,7 +21,8 @@ class CourseController extends Controller
 
         //return CourseResource::collection(Course::all());
 
-        return response()->json(['courses' => Course::withCount(['students','grades'])->get()]);
+        return datatables(Course::withCount(['students','grades'])->get())->make(true);
+       // return sendData(Course::withCount(['students','grades'])->get());
     }
 
     /**
@@ -31,9 +33,16 @@ class CourseController extends Controller
      */
     public function store(CourseRequest $request)
     {
+
+
         $validated = $request->validated();
 
+        //return $validated;
         $course = Course::create(array_merge($validated , ['code' => uid()]));
+
+        if($request->has('grades')){
+            $course->grades()->createMany($validated['grades']);
+        }
 
         return sendData(data : $course , message: "course stored successfully");
     }

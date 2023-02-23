@@ -17,47 +17,38 @@
 
                                         <div class="p-5">
                                             <div class="text-center">
-                                                <h1 class="h4 text-gray-900 mb-4 text-capitalize">{{$t("Welcome Back!")}}
+                                                <h1 class="h4 text-gray-900 mb-4 text-capitalize">Welcome Back!
                                                 </h1>
                                             </div>
                                             <Errors :errors="errors"></Errors>
 
-                                            <form class="user" @submit.prevent="login" method="post">
+                                            <form class="user" @submit.prevent="login" >
 
                                                 <input type="hidden" name="_token" :value="csrf">
                                                 <div class="form-group">
                                                     <input type="email" class="form-control form-control-user"
-                                                        v-model="creds.email" id="exampleInputEmail" name="email"
-                                                        aria-describedby="emailHelp" :placeholder="emailplaceholder"                                                 required>
+                                                        v-model="creds.email"  name="email"
+                                                         placeholder="Email"                                                 required>
                                                 </div>
                                                 <div class="form-group">
                                                     <input type="password" class="form-control form-control-user"
-                                                        v-model="creds.password" id="exampleInputPassword"
-                                                        name="password" :placeholder="passwordplaceholder" required >
+                                                        v-model="creds.password"
+                                                        name="password" placeholder="Password" required >
                                                 </div>
                                                 <div class="form-group">
                                                     <div class="custom-control custom-checkbox small">
                                                         <input type="checkbox" class="custom-control-input"
                                                             id="customCheck" name="remember">
                                                         <label class="custom-control-label"
-                                                            for="customCheck">{{$t('r-me')}}</label>
+                                                            for="customCheck">remember me</label>
                                                     </div>
                                                 </div>
                                                 <button :disabled=processing
                                                     class="btn btn-primary btn-user btn-block text-capitalize">
-                                                    {{processing ? $t('login')+"..." : $t('login')}}
+                                                    {{processing ? "login..." : "login"}}
                                                 </button>
                                             </form>
-                                            <hr>
-                                            <div class="text-center">
-                                                <router-link class="small" :to="{name :'forgot-password'}">
-                                                    {{$t('forgot-password')}}</router-link>
-                                            </div>
-                                            <div class="text-center">
-                                                <router-link class="small" :to="{ name : 'register'}">
-                                                    {{$t('create account')}}
-                                                </router-link>
-                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -77,12 +68,6 @@
 <script>
 import Errors from '../inc/ValidationErrors.vue'
 
-    import {
-        mapActions,
-        mapGetters
-    } from 'vuex'
-    import { wTrans } from 'laravel-vue-i18n'
-
     export default {
         components:{
             Errors
@@ -90,50 +75,36 @@ import Errors from '../inc/ValidationErrors.vue'
         data() {
             return {
                 errors: null,
-                csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 processing: false,
                 creds: {
                     email: '',
                     password: '',
-                },
-                passwordplaceholder : wTrans("password"),
-                emailplaceholder : wTrans("email")
+                }
             }
         },
         methods: {
-            ...mapActions({
-                signIn: 'login',
-            }),
+
             async login() {
                 this.processing = true
-                await axios.get('/sanctum/csrf-cookie')
+                //await axios.get('/sanctum/csrf-cookie')
                 await axios.post('/api/login', this.creds).then(res => {
 
-                    window.axios.defaults.headers.common = {
-                        'Authorization': `Bearer ${res.data.token}`
-                    }
-
-                    this.signIn()
+                    console.log(res)
 
                 }).catch(err => {
                     this.errors = err.response.data.errors;
-                    console.log(err)
+                    //console.log(err)
                 }).finally(() => {
                     this.processing = false
                 })
             },
             redirectAuth() {
-                if (this.$store.getters.isAdmin) {
+                if (this.store.getters.isAuthenticated) {
                     this.$router.push({
                         name: 'dashboard'
                     })
-
-                } else if (this.$store.getters.isSupervisor) {
-                    this.$router.push({
-                        name: 'supervisor.dashboard'
-                    })
-                }
             }
+        }
 
         },
         watch: {
@@ -145,7 +116,6 @@ import Errors from '../inc/ValidationErrors.vue'
             document.title = "Store | Login"
         },
         mounted() {
-            this.redirectAuth()
 
         }
     }

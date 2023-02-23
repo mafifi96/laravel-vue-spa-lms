@@ -3,10 +3,6 @@
 
  import Login from '../Components/auth/Login.vue'
 
- import Register from '../Components/auth/Register.vue'
-
- import ForgotPassword from '../Components/auth/ForgotPassword.vue'
-
  import NotFound from '../Components/inc/NotFound.vue'
 
 /*
@@ -29,16 +25,6 @@ const routes = [
         path: '/',
         name: 'login',
         component: Login
-    },
-    {
-        path: '/register',
-        name: 'register',
-        component: Register
-    },
-    {
-        path: '/forgot-password',
-        name: 'forgot-password',
-        component: ForgotPassword
     },
     {
         path : '/:pathMatch(.*)*',
