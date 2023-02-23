@@ -44,11 +44,15 @@ class CourseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Course $course)
     {
-        $course = Course::findOrFail($id)->load(['students' , 'grades'])->loadCount(['students','grades']);
+        /* $course = Course::findOrFail($id)->load(['students' , 'grades'])->loadCount(['students','grades']);
 
         return sendData($course);
+         */
+
+
+         return sendData(['course' => $course ]);
     }
 
     /**

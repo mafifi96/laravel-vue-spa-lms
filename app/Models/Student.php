@@ -26,9 +26,11 @@ class Student extends Model
     return $this->belongsToMany(Grade::class , 'students_grades')->withTimestamps();
    }
 
+
    public function level()
    {
     return $this->belongsTo(Level::class);
    }
+
 
 }
