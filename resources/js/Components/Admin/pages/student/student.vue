@@ -49,7 +49,7 @@
 
                 </div>
 
-                <div class="col-lg-4 col-md-12 col-sm-12 h-100" >
+                <div class="col-lg-4 col-md-12 col-sm-12 h-100">
 
                     <div class="card">
                         <div class="card-header">
@@ -73,8 +73,10 @@
 
                             <div class="list-group">
                                 <div class="list-group-item" v-for="(course , index) in student?.courses" :key="index">
-                                    <router-link class="text-slate-500 capitalize" :to="{name :'course' , params : {id : course.id}}">{{ course.name }}</router-link>
-                            </div>
+                                    <router-link class="text-slate-500 capitalize"
+                                        :to="{name :'course' , params : {id : course.id}}">{{ course.name }}
+                                    </router-link>
+                                </div>
                             </div>
 
                         </div>
@@ -89,30 +91,33 @@
                         <div class="col-lg-4 col-md-4 col-sm-12 my-4" v-for="(course , index) in courses" :key="index">
                             <div class="card shadow-sm">
                                 <div class="card-header">
-                                   <h6>
-                                       <router-link class="text-slate-500 capitalize font-semibold" :to="{name :'course' , params : {id : course.id}}">{{ course.name }}</router-link>
-                                   </h6>
+                                    <h6>
+                                        <router-link class="text-slate-500 capitalize font-semibold"
+                                            :to="{name :'course' , params : {id : course.id}}">{{ course.name }}
+                                        </router-link>
+                                    </h6>
                                 </div>
                                 <div class="card-body">
                                     <p>
                                         {{excerpt(course.description)}}
                                     </p>
                                     <p class="flex flex-column space-y-2 capitalize text-slate-400 text-sm">
-                                        <span >students  <strong> {{ course.students_count }} </strong></span>
-                                        <span >grades <strong> {{ course.grades_count }}</strong></span>
+                                        <span>students <strong> {{ course.students_count }} </strong></span>
+                                        <span>grades <strong> {{ course.grades_count }}</strong></span>
                                     </p>
                                 </div>
                                 <div class="card-footer p-1">
                                     <div class="flex justify-center items-center">
 
-                                        <button v-if="enrolled(course.id)" :disabled="processing" @click.prevent="disenroll(course , index)"
-                                            class="bg-black block my-3 w-auto text-white px-6 rounded tracking-wide capitalize py-2 hover:bg-indigo-700 hover:ring-1 hover:ring-indigo-700 transition-all font-semibold">
-                                            {{ processing ? "disenrolling..." : "disenroll" }}
+                                        <button v-if="enrolled(course.id)"
+                                            @click.prevent="disenroll(course,index ,$event)"
+                                            class="bg-gray-900 block my-3 w-auto text-white px-6 rounded tracking-wider capitalize py-2 hover:bg-indigo-700 hover:ring-1 hover:ring-indigo-700 transition-all font-lighter">
+                                            disenroll
                                         </button>
 
-                                        <button v-else :disabled="processing" @click.prevent="enroll(course , index)"
-                                            class="bg-blue-500 block my-3 w-auto text-white px-6 rounded tracking-wide capitalize py-2 hover:bg-indigo-700 hover:ring-1 hover:ring-indigo-700 transition-all font-semibold">
-                                            {{ processing ? "enrolling..." : "enroll" }}
+                                        <button v-else @click.prevent="enroll(course , index , $event)"
+                                            class="bg-blue-500 block my-3 w-auto text-white px-6 rounded tracking-wider capitalize py-2 hover:bg-indigo-700 hover:ring-1 hover:ring-indigo-700 transition-all font-semibold">
+                                            enroll
                                         </button>
 
 
@@ -135,9 +140,9 @@
 
         data: function () {
             return {
-                processing : false,
+                processing: false,
                 student: "",
-                courses : ""
+                courses: ""
             }
         },
         methods: {
@@ -150,54 +155,62 @@
                     console.log(err)
                 })
             },
-            async getCourses()
-            {
+            async getCourses() {
                 await axios.get("/api/courses", {
-                    header : {
-                        'x-students' : 'students'
-                    }
-                })
-                .then(res =>{
-                    this.courses = res.data.data
-                })
+                        header: {
+                            'x-students': 'students'
+                        }
+                    })
+                    .then(res => {
+                        this.courses = res.data.data
+                    })
             },
-            async enroll(course , index){
-                this.processing = true
-                await axios.post("/api/course/enroll" , {
-                    course_id : course.id,
-                    student_id : this.student.id
-                }).then(res=>{
+            async enroll(course, index, event) {
 
-                    this.student.courses.push({id : course.id , name : course.name});
+                event.target.textContent = "enrolling..."
 
-                    //this.courses.splice(index,1);
+                await axios.post("/api/course/enroll", {
+                    course_id: course.id,
+                    student_id: this.student.id
+                }).then(res => {
 
-                }).finally(()=>{
-                    this.processing = false
-                })
-            },
-            async disenroll(course , index){
-                this.processing = true
-                await axios.post("/api/course/disenroll" , {
-                    course_id : course.id,
-                    student_id : this.student.id
-                }).then(res=>{
+                    this.getCourses()
+                    this.getstudent()
+                    event.target.textContent = "disenroll"
 
-                    this.student.courses.splice(index , 1);
+                }).catch((err) => {
 
-                }).finally(()=>{
-                    this.processing = false
+                    event.target.textContent = "enroll"
+
+
                 })
             },
-            excerpt(str)
-            {
-                return str.substring(0,30) + "..."
+            async disenroll(course, index, event) {
+
+                event.target.textContent = "disenrolling..."
+
+                await axios.post("/api/course/disenroll", {
+                    course_id: course.id,
+                    student_id: this.student.id
+                }).then(res => {
+
+                    this.getCourses()
+                    this.getstudent()
+                    event.target.textContent = "enroll"
+
+                }).catch(err => {
+
+                    event.target.textContent = "disenroll"
+
+                })
+            },
+            excerpt(str) {
+                return str.substring(0, 30) + "..."
             },
 
-            enrolled(id){
-                const found = this.student.courses.find((el)=>{
-                    if(el.id == id)
-                    {
+            enrolled(id) {
+                const found = this.student.courses.find((el) => {
+                    if (el.id == id) {
                         return true
                     }
                     return false
@@ -211,6 +224,7 @@
             this.getstudent()
             this.getCourses()
             document.title = "LMS | Student "
+
 
         }
     }
