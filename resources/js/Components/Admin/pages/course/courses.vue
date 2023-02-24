@@ -49,24 +49,14 @@
 </template>
 <script>
     export default {
-        data: function () {
 
-            return {
-                courses: []
-            }
-        },
-        methods: {
-            getCourses() {
-                axios.get("/api/courses").then(res => {
-                    this.courses = res.data.data;
-                    console.log(res.data)
-                }).catch(err => {
-                    console.log(err)
-                })
+        methods:{
+            navigateTo(_id) {
+            return this.$router.push({name : "course" , params : {id : _id}})
             }
         },
         mounted() {
-            // this.getCourses()
+
             document.title = "LMS | Courses"
 
 
@@ -80,7 +70,12 @@
                         "data": "code"
                     },
                     {
-                        "data": "name"
+                        "data": "name",
+                        "render": function (data, type, row, meta) {
+
+                            return `<button data-id="${row.id}"  class="router-link block cursor-pointer apperance-none">${row.name}</button>`
+                        }
+
                     },
                     {
                         "data": "grades_count"
@@ -93,6 +88,13 @@
                     }
                 ]
             });
+
+            document.onclick = (e) => {
+
+                if (e.target.classList.contains("router-link") && e.target.dataset.id > 0) {
+                    this.navigateTo(e.target.dataset.id)
+                }
+            }
 
         },
 

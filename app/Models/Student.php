@@ -14,6 +14,8 @@ class Student extends Model
 
     protected $guarded = [];
 
+
+
                 /**
      * The attributes that should be cast.
      *
@@ -34,9 +36,8 @@ class Student extends Model
 
    public function grades()
    {
-    return $this->hasManyThrough(Grade::class, 'students_grades')->withTimestamps();
+    return $this->belongsToMany(Grade::class, 'students_grades')->withPivot('degree')->withTimestamps();
    }
-
 
    public function level()
    {

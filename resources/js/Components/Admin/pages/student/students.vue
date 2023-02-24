@@ -8,9 +8,6 @@
                 class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                     class="fas fa-plus fa-sm text-capitalize"></i>
                 add student</router-link>
-
-            <button id="tests">test</button>
-
         </div>
 
         <!-- Content Row -->
@@ -52,33 +49,15 @@
 
 </template>
 <script>
-    //import test from 'node:test';
-    import {
-        nextTick
-    } from 'vue';
 
     export default {
-        data: function () {
-
-            return {
-                students: []
-            }
-        },
         methods: {
-            getstudents() {
-                axios.get("/api/students").then(res => {
-                    this.students = res.data.data;
-                    console.log(res.data)
-                }).catch(err => {
-                    console.log(err)
-                })
-            },
         navigateTo(_id) {
             return this.$router.push({name : "student" , params : {id : _id}})
             }
         },
         mounted() {
-            //this.getstudents()
+
             document.title = "LMS | students"
 
             let studentsTable = new DataTable("#students", {
@@ -121,15 +100,7 @@
                     this.navigateTo(e.target.dataset.id)
                 }
             }
-/*
-             $(document).on('click', '.router-link', function (e) {
 
-                e.preventDefault();
-                let id = e.target.dataset.id;
-                window.location = "/courses"
-
-            });
- */
         }
 
 

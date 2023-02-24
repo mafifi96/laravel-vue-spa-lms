@@ -31,6 +31,6 @@ class Grade extends Model
 
     public function students()
     {
-        return $this->belongsToMany(Student::class , 'students_grades')->withTimestamps();
+        return $this->belongsToMany(Student::class , 'students_grades')->withPivot('degree')->withTimestamps();
     }
 }

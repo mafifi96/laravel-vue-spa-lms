@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Http\Requests\CourseRequest;
 use App\Http\Resources\CourseResource;
+use App\Models\Grade;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class CourseController extends Controller
 {
@@ -16,13 +19,15 @@ class CourseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 
-        //return CourseResource::collection(Course::all());
+        if($request->hasHeader('x-students'))
+        {
+            return sendData(Course::withCount(['students','grades'])->get());
+        }
 
         return datatables(Course::withCount(['students','grades'])->get())->make(true);
-       // return sendData(Course::withCount(['students','grades'])->get());
     }
 
     /**
@@ -56,9 +61,21 @@ class CourseController extends Controller
     public function show(Course $course)
     {
 
-        $students = Student::whereBelongsTo($course)->get();
+        $grades = Grade::whereBelongsTo($course)->get()->load('students');
 
-         return sendData(['course' => $course  , 'students' => $students]);
+/*         $students = [];
+
+        for($i=0; $i<count($grades); $i++)
+        {
+            $test = [];
+            for($j = 0; $j<=$i; $j++)
+            {
+                $test[] = $grades[$j]->students;
+            }
+
+        }
+ */
+         return sendData(['course' => $course->loadCount(['students' , 'grades']) , 'grades' => $grades]);
     }
 
     /**
@@ -71,9 +88,31 @@ class CourseController extends Controller
     public function update(CourseRequest $request,Course $course)
     {
 
+
         $validated = $request->validated();
 
-        $course->update($validated);
+        $course->update([
+            'name' => $validated['name'],
+            'description' => $validated['description']
+        ]);
+
+        if(!empty($validated['grades'])){
+
+
+           collect($validated['grades'])->each(function($grade) use ($course){
+
+            if($course->grades->find($grade['id']))
+            {
+                $course->grades->find($grade['id'])->update($grade);
+
+            }else{
+                $course->grades()->create($grade);
+            }
+
+
+
+           });
+        }
 
         return sendData(message: "updated successfully");
     }

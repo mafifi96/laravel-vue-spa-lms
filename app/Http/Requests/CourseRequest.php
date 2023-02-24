@@ -26,7 +26,8 @@ class CourseRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:70|min:10',
-            'description' => 'required|max:1000',
+            'description' => 'required|max:1000|min:30',
+            'grades.*.id' => '',
             'grades.*.name' => 'string',
             'grades.*.maxDegree' => 'numeric'
         ];

@@ -9,16 +9,16 @@
                 <router-link :to="{name :'students.create'}" class="btn btn-sm btn-primary shadow-sm mx-2"><i
                         class="fas fa-plus fa-sm "></i>
                     Create student</router-link>
-                <router-link :to="'/students/'+student.id" class="btn btn-info btn-sm shadow-sm"><i
-                        class="fas fa-edit fa-sm"></i> Edit</router-link>
+                <router-link :to="{name : 'students.edit' , params : {id : this.$route.params.id}}"
+                    class="btn btn-info btn-sm shadow-sm"><i class="fas fa-edit fa-sm"></i> Edit</router-link>
             </div>
 
             <!-- Content Row -->
             <div class="row">
 
-                <div class="col-lg-8 col-md-12 col-sm-12">
+                <div class="col-lg-8 col-md-12 col-sm-12 h-100">
 
-                    <div class="card">
+                    <div class="card h-100">
                         <div class="card-header">
                             <h6 class="text-capitalize">student <strong>{{ student.name }}</strong></h6>
                         </div>
@@ -49,17 +49,21 @@
 
                 </div>
 
-                <div class="col-lg-4 col-md-12 col-sm-12">
+                <div class="col-lg-4 col-md-12 col-sm-12 h-100" >
 
                     <div class="card">
                         <div class="card-header">
-                            <h6 class="text-capitalize">student`s courses
-                                <strong>
+                            <h6 class="text-capitalize">
+                                <strong v-if="student.courses_count == 0">
+                                    Student is Not Enrolled in any Course
+                                </strong>
+                                <strong v-if="student.courses_count != 0">
+                                    student`s courses
                                     {{ student.courses_count }}
                                 </strong>
 
                                 {{
-                                (student.courses_count > 1) ? " Courses" : "Student is Not Enrolled in any Course"
+                                (student.courses_count > 1) ? " Courses" : "Course"
                             }}
 
                             </h6>
@@ -67,44 +71,63 @@
 
                         <div class="card-body">
 
-                            <div class="accordion" id="oaccordion">
+                            <div class="list-group">
+                                <div class="list-group-item" v-for="(course , index) in student?.courses" :key="index">
+                                    <router-link class="text-slate-500 capitalize" :to="{name :'course' , params : {id : course.id}}">{{ course.name }}</router-link>
+                            </div>
+                            </div>
 
-                                <div class="accordion-item" v-for="(course , index) in student?.courses" :key="index">
-                                    <h2 class="accordion-header" :id="'oheading'+index">
-                                        <button class="accordion-button collapsed" type="button"
-                                            data-bs-toggle="collapse" :data-bs-target="'#ocollapse'+index"
-                                            aria-expanded="false" :aria-controls="'ocollapse'+index">
-                                            {{course.name}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row mb-4 mt-4">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-12 my-4" v-for="(course , index) in courses" :key="index">
+                            <div class="card shadow-sm">
+                                <div class="card-header">
+                                   <h6>
+                                       <router-link class="text-slate-500 capitalize font-semibold" :to="{name :'course' , params : {id : course.id}}">{{ course.name }}</router-link>
+                                   </h6>
+                                </div>
+                                <div class="card-body">
+                                    <p>
+                                        {{excerpt(course.description)}}
+                                    </p>
+                                    <p class="flex flex-column space-y-2 capitalize text-slate-400 text-sm">
+                                        <span >students  <strong> {{ course.students_count }} </strong></span>
+                                        <span >grades <strong> {{ course.grades_count }}</strong></span>
+                                    </p>
+                                </div>
+                                <div class="card-footer p-1">
+                                    <div class="flex justify-center items-center">
+
+                                        <button v-if="enrolled(course.id)" :disabled="processing" @click.prevent="disenroll(course , index)"
+                                            class="bg-black block my-3 w-auto text-white px-6 rounded tracking-wide capitalize py-2 hover:bg-indigo-700 hover:ring-1 hover:ring-indigo-700 transition-all font-semibold">
+                                            {{ processing ? "disenrolling..." : "disenroll" }}
                                         </button>
-                                    </h2>
-                                    <div :id="'ocollapse'+index" class="accordion-collapse collapse"
-                                        :aria-labelledby="'oheading'+index" data-bs-parent="#oaccordion">
-                                        <div class="accordion-body table-responsive">
-                                            <table class="table ">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col">name</th>
-                                                        <th scope="col">quantity</th>
-                                                        <th scope="col">price</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
 
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        <button v-else :disabled="processing" @click.prevent="enroll(course , index)"
+                                            class="bg-blue-500 block my-3 w-auto text-white px-6 rounded tracking-wide capitalize py-2 hover:bg-indigo-700 hover:ring-1 hover:ring-indigo-700 transition-all font-semibold">
+                                            {{ processing ? "enrolling..." : "enroll" }}
+                                        </button>
+
+
                                     </div>
+
                                 </div>
                             </div>
                         </div>
-</div>
-                </div>
                     </div>
-
-
+                </div>
             </div>
-            <!-- /.container-fluid -->
+
         </div>
+        <!-- /.container-fluid -->
+    </div>
 </template>
 
 <script>
@@ -112,7 +135,9 @@
 
         data: function () {
             return {
-                student: {}
+                processing : false,
+                student: "",
+                courses : ""
             }
         },
         methods: {
@@ -124,10 +149,67 @@
                 }).catch(err => {
                     console.log(err)
                 })
+            },
+            async getCourses()
+            {
+                await axios.get("/api/courses", {
+                    header : {
+                        'x-students' : 'students'
+                    }
+                })
+                .then(res =>{
+                    this.courses = res.data.data
+                })
+            },
+            async enroll(course , index){
+                this.processing = true
+                await axios.post("/api/course/enroll" , {
+                    course_id : course.id,
+                    student_id : this.student.id
+                }).then(res=>{
+
+                    this.student.courses.push({id : course.id , name : course.name});
+
+                    //this.courses.splice(index,1);
+
+                }).finally(()=>{
+                    this.processing = false
+                })
+            },
+            async disenroll(course , index){
+                this.processing = true
+                await axios.post("/api/course/disenroll" , {
+                    course_id : course.id,
+                    student_id : this.student.id
+                }).then(res=>{
+
+                    this.student.courses.splice(index , 1);
+
+                }).finally(()=>{
+                    this.processing = false
+                })
+            },
+            excerpt(str)
+            {
+                return str.substring(0,30) + "..."
+            },
+
+            enrolled(id){
+                const found = this.student.courses.find((el)=>{
+                    if(el.id == id)
+                    {
+                        return true
+                    }
+                    return false
+
+                })
+
+                return found
             }
         },
         mounted() {
             this.getstudent()
+            this.getCourses()
             document.title = "LMS | Student "
 
         }

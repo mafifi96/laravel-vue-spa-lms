@@ -4,7 +4,7 @@
 
         <!-- Page header -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Categories</h1>
+            <h1 class="h3 mb-0 text-gray-800">courses</h1>
 
         </div>
 
@@ -15,34 +15,66 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h6 class="h6 text-muted">Edit Category {{Category.name}}</h6>
-
-                        <div v-show="errors && errors.msg" class="alert alert-danger">
-                            {{ errors.msg }}
-                        </div>
-
-                        <div v-show="saved" class="alert alert-success alert-dismissible fade show" role="alert">
-                            <p v-html="message"></p>
-                            <button @click="!saved" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
+                        <h6 class="h6 text-muted">Create New course</h6>
+                        <Errors v-if="errors" :errors="errors"></Errors>
 
                     </div>
                     <div class="card-body">
-                        <form @submit.prevent="updateCategory()">
+
+                        <form>
 
                             <div class="form-group">
-                                <input type="text" class="form-control form-control-user" v-model="name"
-                                    placeholder="Enter Category Name..." required>
+                                <input type="text" class="form-control form-control-user" v-model="course.name"
+                                    name="name" placeholder="Enter course Name..." required>
                             </div>
                             <div class="form-group">
-                                <textarea class="form-control form-control-user" v-model="desc"
-                                    placeholder="Description"></textarea>
+                                <textarea class="form-control form-control-user" v-model="course.description"
+                                    name="description" placeholder="Description"></textarea>
                             </div>
-                            <div class="text-center">
-                                <button :disabled="processing" type="submit" class=" btn btn-primary btn-user">
-                                    {{processing ? "Updating..." : "Save"}}
+                            <div class="my-3">
+                                <h4 class="text-capitalize mb-2">grades</h4>
+                                <span v-if="grades.length == 0">No grades in this course</span>
+                                <div v-if="grades.length > 0" class="flex justify-center items-center space-x-2"
+                                    v-for="(grade , index) in grades" :key="index">
+                                    <div class="flex-[70%]">
+                                        <input type="text" placeholder="grade name"
+                                            class="w-full p-2 rounded appearance-none border ring-inset shadow-sm"
+                                            v-model="grades[index].name">
+
+                                    </div>
+                                    <div class="flex-[20%]">
+                                        <input type="number"
+                                            class="w-full p-2 rounded appearance-none border ring-inset shadow-sm"
+                                            v-model="grades[index].maxDegree" placeholder="grade degree">
+                                    </div>
+                                    <div class="flex-[10%] items-center">
+                                        <button @click.prevent="deleteGrade(index,grades[index].id)"
+                                            class="bg-black block my-3 w-auto text-white  rounded tracking-wide capitalize p-2 hover:bg-red-600 transition-all text-sm">
+                                            <i class="fa fa-times"></i>
+
+                                        </button>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div>
+                                <button @click.prevent="addgrade()"
+                                    class="bg-black block my-3 w-auto text-white  rounded tracking-wide capitalize p-2 hover:bg-indigo-700 hover:ring-1 hover:ring-indigo-700 transition-all text-sm">
+                                    add grade <i class="fa fa-plus text-xs"></i>
+
                                 </button>
+
                             </div>
+
+                            <div class="flex justify-center items-center">
+                                <button :disabled="processing" @click.prevent="updatecourse()"
+                                    class="bg-blue-500 block my-3 w-auto text-white px-6 rounded tracking-wide capitalize py-2 hover:bg-indigo-700 hover:ring-1 hover:ring-indigo-700 transition-all font-semibold">
+                                    {{ processing ? "Saving..." : "Save" }}
+                                </button>
+
+                            </div>
+
                         </form>
                     </div>
                 </div>
@@ -56,56 +88,84 @@
 </template>
 
 <script>
+    import Errors from '../../../inc/ValidationErrors.vue'
+
     export default {
+        components: {
+            Errors
+        },
         data: function () {
             return {
-                errors: {},
+                errors: '',
                 saved: false,
-                processing: false,
                 message: '',
-                name: '',
-                desc: '',
-                id: this.$route.params.id,
-                Category: {}
+                course: {
+                    name: "",
+                    description: ""
+                },
+                grades: [{
+                    name: "",
+                    maxDegree: ""
+                }],
+                processing: false
             }
         },
         methods: {
-            updateCategory() {
-                this.processing = true
-                axios.put("/api/categories/" + this.id, {
-                    name: this.name,
-                    description: this.desc
-                }).then(res => {
-                    this.saved = true
-                    this.message = res.data.message
-                    this.name = ''
-                    this.desc = ''
+            addgrade() {
+                this.grades.push({
+                    id: "",
+                    name: "",
+                    maxDegree: ""
+                })
+            },
+            async getcourse() {
+                await axios.get("/api/courses/" + this.$route.params.id).then(res => {
+                    this.course = res.data.data.course;
+                    this.grades = res.data.data.grades;
+
                 }).catch(err => {
-                    this.errors = err.response.data
+                    console.log(err.response.data.errors)
+                })
+            },
+            async updatecourse() {
+                this.processing = true
+                await axios.post(`http://127.0.0.1:8000/api/courses/${this.$route.params.id}`, {
+                    name: this.course.name,
+                    description: this.course.description,
+                    grades: this.grades,
+                    _method: "PATCH"
+                }).then(res => {
+                    alert("updated")
+                    console.log(res)
+
+                }).catch(err => {
+                    console.log(err)
+                    if (err && err.response.data) {
+                        this.errors = err.response.data
+                    } else {
+                        this.errors = err.response.data.message || "something is wrong..!"
+                    }
                 }).finally(() => {
                     this.processing = false
                 })
             },
-            getCategory() {
+            async deleteGrade(index, id) {
 
-                axios.get("/api/categories/" + this.id).then(res => {
+                this.grades.splice(index, 1)
 
-                    this.Category = res.data;
+                if (id) {
+                    await axios.post(`http://127.0.0.1:8000/api/grades/${id}`, {
+                        _method: "DELETE"
+                    }).catch((err => {
+                        console.log(err)
+                    }))
 
-                }).catch(err => {
-                    console.log(err)
-                })
-            }
-        },
-        watch: {
-            $route(to, from) {
-                this.id = this.$route.params.id
-                this.getCategory()
-                document.title = "Store | Category - " + this.name
+                }
             }
         },
         mounted() {
-            this.getCategory()
+            this.getcourse()
+            document.title = "Store | Create course"
         }
 
     }

@@ -5,7 +5,7 @@
 
             <!-- Page header -->
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                <h1 class="h3 mb-0 text-gray-800">Products</h1>
+                <h1 class="h3 mb-0 text-gray-800">Students</h1>
 
             </div>
 
@@ -16,60 +16,45 @@
 
                     <div class="card">
                         <div class="card-header">
-                            <h6 class="h6 text-muted">Create New Product</h6>
-                            <Errors :errors="errors"></Errors>
+                            <h6 class="h6 text-muted">Add New student</h6>
+                            <Errors v-if="errors" :errors="errors"></Errors>
 
-                        </div>
-
-
-                        <div v-if="saved" class="alert alert-success alert-dismissible fade show m-3" role="alert">
-                            {{message}}
-                            <button @click="!saved" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
 
                     </div>
                     <div class="card-body">
-                        <form enctype="multipart/form-data">
+                        <form>
 
                             <div class="form-group">
-                                <input type="text" class="form-control form-control-user" v-model="product.title"
-                                    placeholder="title" required>
+                                <input type="text" class="form-control form-control-user" v-model="student.name"
+                                    placeholder="Name" required>
                             </div>
                             <div class="form-group">
-                                <input type="file" name="image" id="file" class="form-control form-control-user"
-                                    v-on:change="product.image = $event.target.files[0]" placeholder="image" required>
-                            </div>
-
-                            <div class="mb-3 d-none" id="cover-thumbnail">
-                                <img class="img-thumbnail" id="cover" src="" alt="product cover">
+                                <input type="email" class="form-control form-control-user" v-model="student.email"
+                                    placeholder="Email" required>
                             </div>
                             <div class="form-group">
-                                <textarea class="form-control form-control-user" v-model="product.description" required
-                                    placeholder="Description..."></textarea>
-                            </div>
-                            <div class="form-group">
-                                <input type="number" class="form-control form-control-user" v-model="product.price"
-                                    placeholder="price" required>
-                            </div>
-                            <div class="form-group">
-                                <input class="form-control form-control-user" v-model="product.quantity" type="number"
-                                    required placeholder="quantity">
+                                <input class="form-control form-control-user" v-model="student.birth" type="date"
+                                    required placeholder="Birth">
                             </div>
 
                             <div class="form-group">
-                                <select v-model="product.category_id" class="form-control form-control-user">
-                                    <option value="" selected>--Category--</option>
+                                <select v-model="student.level_id" class="form-control form-control-user" >
+                                    <option value="" selected>Select Level</option>
 
-                                    <option v-for="category in categories" :key="category.id" :value="category.id">
-                                        {{category.name}}</option>
+                                    <option v-for="level in levels" :key="level.id" :value="level.id">
+                                        {{level.name}}</option>
 
                                 </select>
                             </div>
-                            <button :disabled="processing" @click.prevent="createProduct()"
-                                class="btn btn-primary btn-user btn-block">
-                                {{ processing ? "Saving..." : "Create" }}
-                                <img v-show="processing" src="/imgs/ajax.gif" alt="loading">
-                            </button>
+                            <div class="flex justify-center items-center">
+                                <button :disabled="processing" @click.prevent="createStudent()"
+                                    class="bg-blue-500 block my-3 w-auto text-white px-6 rounded tracking-wide capitalize py-2 hover:bg-indigo-700 hover:ring-1 hover:ring-indigo-700 transition-all font-semibold">
+                                    {{ processing ? "Saving..." : "Save" }}
+                                </button>
+
+                            </div>
+
                         </form>
                     </div>
                 </div>
@@ -84,108 +69,69 @@
 </template>
 
 <script>
-import Errors from '../../../inc/ValidationErrors.vue'
+    import Errors from '../../../inc/ValidationErrors.vue'
 
     export default {
-        components : {
+        components: {
             Errors
         },
         data: function () {
             return {
-                product: {
-                    title: null,
-                    description: null,
-                    image: null,
-                    price: null,
-                    quantity: null,
-                    category_id: ''
-                },
-                saved: false,
-                message: null,
                 processing: false,
-                categories: [],
-                brands: [],
-                errors: null,
-                csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                levels: [],
+                errors: '',
+                student: {
+                    name: "",
+                    email: "",
+                    birth: "",
+                    level_id: ""
+                }
             }
         },
         methods: {
-            onChanged($event) {
-
-                this.product.image = $event.target.files[0];
-
-            },
-            getCategoriesAndBrands() {
-                axios.get("/api/products/create").then(res => {
-
-                    this.categories = res.data.categories;
-                    this.brands = res.data.brands;
-
-                }).catch(err => {
-                    console.log(err)
-                })
-
-            },
-            async createProduct() {
+            async createStudent() {
                 this.processing = true
-                let formData = new FormData();
 
-                for (let [key, value] of Object.entries(this.product)) {
-
-                    formData.append(key, value)
-
-                }
-
-                await axios.post("/api/products", formData, {
-                        headers: {
-                            'Content-type': 'multipart/form-data , text/plain'
-                        }
-                    })
+                await axios.post("/api/students", {
+                        name : this.student.name,
+                        email : this.student.email ,
+                        birth : this.student.birth,
+                        level_id : this.student.level_id
+                     })
                     .then(res => {
 
-                        this.saved = true
-                        this.message = res.data.message
-
                         Swal.fire({
-                        title: 'Saved!',
-                        text: 'Product created Successfully..!',
-                        icon: 'success',
-                        showCancelButton: true
-                    })
-
-                       return  this.$router.push({
-                            name : "admin.product",params : res.data.product
+                            title: 'Saved!',
+                            text: 'student created Successfully..!',
+                            icon: 'success',
+                            showCancelButton: true
                         })
+
+                        this.student = ""
 
                     }).catch(err => {
 
-                        this.errors = err.response.data.errors
+                        if (err && err.response.data) {
+                            this.errors = err.response.data
+                        } else {
+                            this.errors = err.response.data.message || "something is wrong..!"
+                        }
+
                     }).finally(() => {
                         this.processing = false
+                    })
+            },
+            async getLevels() {
+                await axios.get("/api/levels")
+                    .then(res => {
+                        this.levels = res.data.data
                     })
             }
         },
         mounted() {
-            this.getCategoriesAndBrands()
+            this.getLevels()
 
-            document.title = "Store | Product - Create"
-
-                $("#file").change(function () {
-
-                    $("#cover-thumbnail").removeClass("d-none");
-                    const file = this.files[0];
-                    if (file) {
-                        let reader = new FileReader();
-                        reader.onload = function (event) {
-                            $("#cover")
-                                .attr("src", event.target.result);
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-
-
-
+            document.title = "Store | student - Create"
 
         }
 

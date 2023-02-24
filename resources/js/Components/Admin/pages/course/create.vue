@@ -16,8 +16,8 @@
                 <div class="card">
                     <div class="card-header">
                         <h6 class="h6 text-muted">Create New course</h6>
-                        <Errors v-if="typeof errors === 'object'" :errors="errors"></Errors>
-                        <p class="p-2 bg-danger" v-if="(typeof errors === 'string')">{{ errors }}</p>
+                        <Errors v-if="errors" :errors="errors"></Errors>
+
                     </div>
                     <div class="card-body">
 
@@ -89,7 +89,6 @@
 <script>
 
 import Errors from '../../../inc/ValidationErrors.vue'
-import { ref } from 'vue'
 
     export default {
         components:{
@@ -97,7 +96,7 @@ import { ref } from 'vue'
         },
         data: function () {
             return {
-                errors: ref(),
+                errors: "",
                 saved: false,
                 message: '',
                 name: '',

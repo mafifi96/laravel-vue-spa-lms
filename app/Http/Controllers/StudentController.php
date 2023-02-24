@@ -20,7 +20,7 @@ class StudentController extends Controller
         $students = Student::with(['level'])->get()->loadCount('courses');
 
         return datatables($students)->make(true);
-        return sendData($students);
+
     }
 
     /**
