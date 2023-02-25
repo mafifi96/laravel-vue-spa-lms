@@ -54,10 +54,9 @@
                                     <tr class="p-3 text-center font-bold text-capitalize">
                                         <td colspan="100%">description</td>
                                     </tr>
-                                    <tr class="p-2 text-cente">
+                                    <tr class="p-2 text-center">
                                         <td colspan="100%">{{ course.description }}</td>
                                     </tr>
-
 
                                 </tbody>
                             </table>
