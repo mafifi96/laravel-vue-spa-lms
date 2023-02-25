@@ -76,4 +76,16 @@ class StudentController extends Controller
         $student->delete();
     }
 
+    public function gradesCreate(Request $request , Student $student)
+    {
+
+        foreach($request->grades as $grade)
+        {
+            $student->grades()->syncWithoutDetaching([ $grade['id'] => ['degree' => $grade['maxDegree']]]);
+
+        }
+
+        return $student->grades->sum('pivot.degree');
+    }
+
 }

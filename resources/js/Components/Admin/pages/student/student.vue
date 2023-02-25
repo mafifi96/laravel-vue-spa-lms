@@ -74,7 +74,7 @@
                             <div class="list-group">
                                 <div class="list-group-item" v-for="(course , index) in student?.courses" :key="index">
                                     <router-link class="text-slate-500 capitalize"
-                                        :to="{name :'course' , params : {id : course.id}}">{{ course.name }}
+                                        :to="{name :'StudentCourse' , params : {cid : course.id , sid : student.id}}">{{ course.name }}
                                     </router-link>
                                 </div>
                             </div>
@@ -119,6 +119,7 @@
                                             class="bg-blue-500 block my-3 w-auto text-white px-6 rounded tracking-wider capitalize py-2 hover:bg-indigo-700 hover:ring-1 hover:ring-indigo-700 transition-all font-semibold">
                                             enroll
                                         </button>
+
 
 
                                     </div>

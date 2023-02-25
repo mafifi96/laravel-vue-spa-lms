@@ -152,5 +152,12 @@ class CourseController extends Controller
 
     }
 
+    public function StudentCourse(Course $course , Student $student)
+    {
+        $grades = $course->grades();
+
+        return sendData(['course' => $course, 'grades' => $grades]);
+    }
+
 
 }

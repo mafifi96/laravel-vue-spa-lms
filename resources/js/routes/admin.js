@@ -5,13 +5,13 @@ import CourseCreate from '../Components/Admin/pages/course/create.vue'
 import CourseEdit from '../Components/Admin/pages/course/edit.vue'
 import Students from '../Components/Admin/pages/student/students.vue'
 import Student from '../Components/Admin/pages/student/student.vue'
+import StudentCourse from '../Components/Admin/pages/student/StudentCourse.vue'
 import StudentEdit from '../Components/Admin/pages/student/edit.vue'
 import StudentCreate from '../Components/Admin/pages/student/create.vue'
 import Levels from '../Components/Admin/pages/level/levels.vue'
 import Level from '../Components/Admin/pages/level/level.vue'
 import LevelCreate from '../Components/Admin/pages/level/create.vue'
 import LevelEdit from '../Components/Admin/pages/level/edit.vue'
-
 
 
 const routes = [
@@ -73,6 +73,15 @@ const routes = [
         path: '/students/:id(\\d+)',
         name: 'student',
         component: Student,
+        meta : {
+            middleware : "admin",
+            layout : "AdminLayout"
+        }
+    },
+    {
+        path: '/courses/:cid(\\d+)/students/:sid(\\d+)',
+        name: 'StudentCourse',
+        component: StudentCourse,
         meta : {
             middleware : "admin",
             layout : "AdminLayout"
