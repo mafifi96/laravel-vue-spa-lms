@@ -102,10 +102,10 @@
 
                         Swal.fire({
                             title: 'Saved!',
-                            text: 'student created Successfully..!',
                             icon: 'success',
                             showCancelButton: true
                         })
+
 
                         this.student = ""
 

@@ -82,7 +82,6 @@ class StudentController extends Controller
         foreach($request->grades as $grade)
         {
             $student->grades()->syncWithoutDetaching([ $grade['id'] => ['degree' => $grade['maxDegree']]]);
-
         }
 
         return $student->grades->sum('pivot.degree');

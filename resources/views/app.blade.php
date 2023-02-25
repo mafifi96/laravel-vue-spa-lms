@@ -7,16 +7,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{csrf_token()}}">
         <title>Laravel</title>
-        <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="{{asset("css/all.min.css")}}">
         <link rel="stylesheet" href="{{asset("css/fontawesome.min.css")}}">
         <script src="{{asset("js/jquery-3.6.0.js")}}"></script>
         <script src="{{asset("js/fontawesome.min.js")}}"></script>
 
-
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <!-- <link rel="stylesheet" href="{{asset("build/assets/app.976fb63c.css")}}">
-         -->
+
          <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.css">
 
          @vite('resources/css/app.css')

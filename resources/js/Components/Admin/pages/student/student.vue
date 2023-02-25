@@ -53,20 +53,17 @@
 
                     <div class="card">
                         <div class="card-header">
-                            <h6 class="text-capitalize">
-                                <strong v-if="student.courses_count == 0">
-                                    Student is Not Enrolled in any Course
-                                </strong>
+                            <h6>Add Degree To Student</h6>
+                            <p class="text-capitalize text-sm text-slate-400">
+                                enrolled in
                                 <strong v-if="student.courses_count != 0">
-                                    student`s courses
                                     {{ student.courses_count }}
                                 </strong>
-
                                 {{
                                 (student.courses_count > 1) ? " Courses" : "Course"
                             }}
 
-                            </h6>
+                            </p>
                         </div>
 
                         <div class="card-body">

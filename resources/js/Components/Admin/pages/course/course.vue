@@ -54,7 +54,7 @@
                                     <tr class="p-3 text-center font-bold text-capitalize">
                                         <td colspan="100%">description</td>
                                     </tr>
-                                    <tr class="p-2 text-center text-justify">
+                                    <tr class="p-2 text-cente">
                                         <td colspan="100%">{{ course.description }}</td>
                                     </tr>
 
@@ -71,7 +71,7 @@
 
                 <div class="card mt-3">
                     <div class="card-header text-capitalize">
-                        <h4> <strong>{{ course.students_count }}</strong> enrolled student`s grades degrees</h4>
+                        <h5>grades degrees</h5>
 
                     </div>
                     <div class="card-body table-responsive">
@@ -85,10 +85,22 @@
                                         <template v-if="grades.length > 0" v-for="(grade , index) in grades" :key="index">
                                             <th>{{ grade.name  }} - {{ grade.maxDegree }}</th>
                                         </template>
-
+                                        <th>Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <template v-if="grades.length > 0" v-for="( grade, index) in grades" :key="index">
+                                    <tr>
+                                        <td>{{ grades[index].students[index].code }}</td>
+                                        <td>{{ grades[index].students[index].name }}</td>
+                                        <template v-for="(grade , i) in grades" :key="i">
+                                            <td>{{ grade.students[index]?.pivot?.degree || "Not updated" }}</td>
+                                        </template>
+                                        <td>
+                                            {{ total(grades[index].students[index].id) }}
+                                        </td>
+                                        </tr>
+                                    </template>
 
                                 </tbody>
                             </table>
@@ -110,7 +122,6 @@
         data: function () {
             return {
                 course: {},
-                students: [],
                 grades: [],
                 Id: this.$route.params.id
             }
@@ -124,6 +135,21 @@
                 }).catch(err => {
                     console.log(err.response.data)
                 })
+            },
+            total(id){
+
+                let Total = 0
+                 this.grades.map((grade , index)=>{
+
+                    this.grades[index].students.find((el)=>{
+                        if(el.id == id)
+                        {
+                            Total += el.pivot?.degree
+                        }
+                    })
+                })
+
+                return Total
             }
 
         },

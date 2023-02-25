@@ -135,8 +135,13 @@
                     grades: this.grades,
                     _method: "PATCH"
                 }).then(res => {
-                    alert("updated")
-                    console.log(res)
+
+                    Swal.fire({
+                            title: 'Saved!',
+                            icon: 'success',
+                            showCancelButton: true
+                        })
+
 
                 }).catch(err => {
                     console.log(err)
@@ -145,6 +150,7 @@
                     } else {
                         this.errors = err.response.data.message || "something is wrong..!"
                     }
+
                 }).finally(() => {
                     this.processing = false
                 })

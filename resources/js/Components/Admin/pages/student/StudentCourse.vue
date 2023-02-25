@@ -6,16 +6,14 @@
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800 text-capitalize">course</h1>
 
-            <div class="btn-group">
-                <!--                 <router-link :to="{name : 'student' , params: {sid : this.$route.params.sid}}"
-                    class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-edit fa-sm "></i> Edit Student
-                    </router-link>
+            <!-- <div class="btn-group">
 
-                <router-link :to="{name : 'course.edit' , params : {cid :  this.$route.params.cid}}"
+                <router-link :to="{name : 'course.edit' , params : {cid :  course?.id}}"
                     class="d-none d-sm-inline-block ms-2 btn btn-sm btn-primary shadow-sm"><i
                         class="fas fa-edit fa-sm "></i> Edit course</router-link>
- -->
+
             </div>
+             -->
         </div>
 
         <!-- Content Row -->
@@ -25,7 +23,10 @@
 
                 <div class="card">
                     <div class="card-header ">
-                        <h4>{{ course.name }}</h4>
+                        <h6>save <strong><router-link :to="{name : 'student' , params: {id : this.$route.params.sid}}"
+                    class="font-semibold text-slate-600"> {{student.name }}
+                    </router-link>
+</strong> degrees</h6>
                     </div>
                     <div class="card-body table-responsive">
                         <KeepAlive>
@@ -50,7 +51,7 @@
                                     <tr class="p-3 text-center font-bold text-capitalize">
                                         <td colspan="100%">description</td>
                                     </tr>
-                                    <tr class="p-2 text-center text-justify">
+                                    <tr class="p-2 text-center">
                                         <td colspan="100%">{{ course.description }}</td>
                                     </tr>
 
@@ -96,7 +97,7 @@
                                         <tr>
                                             <td colspan="100%">
 
-                                                <div class="flex justify-center items-center">
+                                                <div v-if="grades" class="flex justify-center items-center">
                                                     <button :disabled="processing" @click.prevent="saveDegrees()"
                                                         class="bg-blue-500 block my-3 w-auto text-white px-6 rounded tracking-wide capitalize py-2 hover:bg-indigo-700 hover:ring-1 hover:ring-indigo-700 transition-all font-semibold">
                                                         {{ processing ? "Saving..." : "Save" }}
@@ -123,6 +124,8 @@
 
 </template>
 <script>
+import { nextTick } from 'vue';
+
     export default {
         data: function () {
             return {
@@ -134,13 +137,15 @@
         },
         methods: {
             async getcourse() {
-                await axios.get(`/api/courses/${this.$route.params.cid}`).then(
+                await axios.get(`/api/courses/${this.$route.params.cid}/students/${this.$route.params.sid}`).then(
                     res => {
 
                         this.course = res.data.data.course;
                         this.grades = res.data.data.grades;
+                        this.student = res.data.data.student;
 
                     }).catch(err => {
+                        //this.$router.push({name : 'NotFound'})
                     console.log(err.response.data)
                 })
             },
@@ -150,8 +155,12 @@
                 await axios.post(`/api/students/${this.$route.params.sid}/grades` , {
                     grades : this.grades
                 }).then(res=>{
-                    console.log(res)
-                    alert("saved")
+                    Swal.fire({
+                            title: 'Saved!',
+                            icon: 'success',
+                            showCancelButton: true
+                        })
+
                 }).finally(()=>{
                     this.processing = false
                 })
@@ -161,6 +170,12 @@
         },
         mounted() {
             this.getcourse()
+/*
+            nextTick(()=>{
+
+                this.getcourse()
+
+            }) */
             //this.getStudents()
             document.title = "Store | Course"
         }

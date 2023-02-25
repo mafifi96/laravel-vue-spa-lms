@@ -46,6 +46,7 @@
                                             class="w-full p-2 rounded appearance-none border ring-inset shadow-sm"
                                             v-model="grades[index].maxDegree" placeholder="grade degree">
                                     </div>
+
                                     <div class="flex-[10%] items-center">
                                         <button @click.prevent="grades.splice(index , 1)"
                                             class="bg-black block my-3 w-auto text-white  rounded tracking-wide capitalize p-2 hover:bg-red-600 transition-all text-sm">
@@ -122,8 +123,12 @@ import Errors from '../../../inc/ValidationErrors.vue'
                     description: this.desc,
                     grades : this.grades
                 }).then(res => {
-                    console.log(res)
-                    //this.message = res.data.message
+
+                    Swal.fire({
+                            title: 'Saved!',
+                            icon: 'success',
+                            showCancelButton: true
+                        })
 
                     this.name = ''
                     this.desc = ''

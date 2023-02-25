@@ -61,21 +61,11 @@ class CourseController extends Controller
     public function show(Course $course)
     {
 
-        $grades = Grade::whereBelongsTo($course)->get()->load('students');
+        $grades = Grade::WhereBelongsTo($course)->get();
 
-/*         $students = [];
+        $grades->load('students:id,code,name');
 
-        for($i=0; $i<count($grades); $i++)
-        {
-            $test = [];
-            for($j = 0; $j<=$i; $j++)
-            {
-                $test[] = $grades[$j]->students;
-            }
-
-        }
- */
-         return sendData(['course' => $course->loadCount(['students' , 'grades']) , 'grades' => $grades]);
+         return sendData(['course' => $course->loadCount(['students','grades']), 'grades' => $grades]);
     }
 
     /**
@@ -134,7 +124,7 @@ class CourseController extends Controller
 
         $student = Student::findOrFail($request->student_id);
 
-        $course->students()->sync($student);
+        $course->students()->syncWithoutDetaching($student);
 
         return sendData(message:"enrolled successfully");
 
@@ -154,9 +144,9 @@ class CourseController extends Controller
 
     public function StudentCourse(Course $course , Student $student)
     {
-        $grades = $course->grades();
+        $grades = $course->grades;
 
-        return sendData(['course' => $course, 'grades' => $grades]);
+        return sendData(['course' => $course, 'grades' => $grades , 'student' => $student]);
     }
 
 
