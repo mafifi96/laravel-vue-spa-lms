@@ -2,9 +2,6 @@
 ##  Laravel Vue SPA Student Management System
 
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-
-
 ## How to install
 
 ## First 
@@ -20,7 +17,8 @@
 ## Second
 
 - After download the project in your prefer directory run following commands :
-
-- composer install
-- php artisan migrate
-- php artisan db:seed
+```
+ composer install
+ php artisan migrate
+ php artisan db:seed
+```
