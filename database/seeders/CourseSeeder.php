@@ -21,7 +21,7 @@ class CourseSeeder extends Seeder
 
        // for real names
 
-        $coursesNames = collect(['learn php', 'learn laravel', 'learn vuejs', 'learn javascript', 'learn mongoDB']);
+        $coursesNames = collect(['learn php 8 for begginner', 'learn laravel x10 queues', 'learn vuejs , nuxtJs and typescript', 'learn javascript and jquey', 'learn mongoDB and graphQl']);
 
         $coursesNames->each(function($course){
             Course::create([

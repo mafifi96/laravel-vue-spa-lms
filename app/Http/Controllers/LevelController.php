@@ -28,8 +28,15 @@ class LevelController extends Controller
     {
         $validated = $request->validated();
 
-        Level::create($validated);
+        Level::create([
+            'code' => uid(),
+            'name' => $validated['name'],
+            'description' => $validated['description']
+        ]);
+
+        return sendData();
     }
+
 
     /**
      * Display the specified resource.
@@ -39,7 +46,7 @@ class LevelController extends Controller
      */
     public function show(Level $level)
     {
-        return sendData($level->loadCount('students'));
+        return sendData($level->load('students')->loadCount('students'));
     }
 
     /**
@@ -55,7 +62,7 @@ class LevelController extends Controller
 
         $level->update($validated);
 
-        return sendData(message: "level updated successfully");
+        return sendData();
     }
 
     /**
@@ -67,7 +74,5 @@ class LevelController extends Controller
     public function destroy(Level $level)
     {
         $level->delete();
-
-        return sendData(message: "level deleted successfully");
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Course;
 use App\Models\Grade;
 use App\Models\Student;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -24,7 +23,7 @@ class StudentsGradesSeeder extends Seeder
 
         $grades->each(function($grade) use ($students){
 
-            $grade->students()->syncWithPivotValues($students , ['degree' => fake()->randomElement([40,45,100])]);
+            $grade->students()->syncWithPivotValues($students , ['degree' => fake()->randomElement([10,20,25,30,40,45,100])]);
 
         });
 

@@ -4,7 +4,13 @@
 
         <!-- Page header -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Orders</h1>
+            <h1 class="h3 mb-0 text-gray-800 capitalize">levels</h1>
+
+            <router-link :to="{name : 'levels.create'}"
+                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                    class="fas fa-plus fa-sm text-capitalize"></i>
+                Create level</router-link>
+
         </div>
 
         <!-- Content Row -->
@@ -14,42 +20,33 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h6 class="h6 text-muted text-uppercase">all orders</h6>
+                        <h6 class="h6 text-muted text-uppercase">all levels</h6>
+                        <p class="text-sm">go to student`s page and upgrade their level</p>
+
                     </div>
                     <div class="card-body table-responsive">
                         <table class="table table-bordered text-center ">
-                            <thead>
+                            <thead class="capitalize">
                                 <tr>
                                     <th scope="col">Id</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Price</th>
-                                    <th scope="col">Customer</th>
-                                    <th scope="col">Careated At</th>
-                                    <th scope="col"></th>
-
+                                    <th scope="col">name</th>
+                                    <th scope="col">students</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(order,index) in orders" :key="index">
+                                <tr v-for="(level,index) in levels" :key="index">
                                     <td scope="row">
-                                        <router-link :to="{name :'order', params :{id : order.id}}">
-                                            {{order.id}}
+                                        <router-link :to="{name :'level', params :{id : level.id}}">
+                                            {{level.id}}
                                         </router-link>
                                     </td>
-                                    <td>{{order.status}}</td>
-                                    <td>&dollar;{{currency(order.total_price) }}</td>
-                                    <td>{{order.user.name}}</td>
-                                    <td>{{formateDate(order.created_at)}}</td>
-                                    <td>
-                                            <div class="btn-group" role="group">
+                                    <td scope="row">
+                                        <router-link :to="{name :'level', params :{id : level.id}}">
+                                            {{level.name}}
+                                        </router-link>
+                                    </td>
 
-                                                <a @click.prevent="warning(order.id)" :data-id="order.id"
-                                                    class="btn btn-danger btn-sm"><i class="fas fa-trash"></i>
-                                                </a>
-
-                                            </div>
-                                        </td>
-
+                                    <td>{{level.students_count}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -68,67 +65,22 @@
 
         data: function () {
             return {
-                orders: []
+                levels: []
             }
         },
         methods: {
-            async getOrders() {
-                await axios.get("/api/orders").then(res => {
+            async getlevels() {
+                await axios.get("/api/levels").then(res => {
 
-                    this.orders = res.data.orders
-
-                }).catch(err => {
-                    console.log(err)
-                })
-            },
-            formateDate(date) {
-                return moment(date).format('MMMM Do YYYY, h:mm:ss a');
-            },
-            currency(value) {
-                let val = (value / 1).toFixed(2).replace('.', ',')
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            },
-            warning(id) {
-
-                Swal.fire({
-                    title: 'Warning!',
-                    text: 'Do you want to delete this order!',
-                    icon: 'warning',
-                    confirmButtonText: 'yes',
-                    showCancelButton: true
-                }).then(res => {
-                    if (res.isConfirmed) {
-                        this.deleteOrder(id)
-                    }
-                })
-            },
-            async deleteOrder(id) {
-
-                await axios.delete(`/api/orders/${id}`).then(res => {
-
-                    Swal.fire({
-                        title: 'deleted!',
-                        text: 'Order Deleted Successfully..!',
-                        icon: 'success',
-                        showCancelButton: true
-                    })
-                    this.getOrders()
-                }).catch(err => {
-
-                    Swal.fire({
-                        title: 'error!',
-                        text: 'something went wrong..!',
-                        icon: 'error',
-                        showCancelButton: true
-                    })
+                    this.levels = res.data.data
 
                 })
-
             }
+
         },
         mounted() {
-            this.getOrders()
-            document.title = "Store | Orders"
+            this.getlevels()
+            document.title = "LMS | levels"
 
         }
 

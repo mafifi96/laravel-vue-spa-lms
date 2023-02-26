@@ -1,110 +1,95 @@
+<template>
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+        <!-- Page header -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 capitalize">level</h1>
+            <router-link :to="{name : 'levels.edit' , params : {id : this.$route.params.id}}"
+                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                    class="fas fa-plus fa-sm text-capitalize"></i>
+                Edit level</router-link>
+
+        </div>
+
+        <!-- Content Row -->
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="h6 text-muted capitalize">{{ level.name }} students ( <strong> {{ level.students_count }} </strong> ) </h6>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <table class="table table-bordered text-center ">
+                            <thead class="capitalize">
+                                <tr>
+                                    <th scope="col">code</th>
+                                    <th scope="col">name</th>
+                                    <th scope="col">email</th>
+                                    <th scope="col">birth</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(student,index) in level.students" :key="index">
+                                    <td scope="row">
+                                        {{student.code}}
+                                    </td>
+                                    <td scope="row">
+                                        <router-link :to="{name :'student', params :{id : student.id}}">
+                                            {{ student.name }}
+                                        </router-link>
+                                    </td>
+                                    <td scope="row">
+                                        {{ student.email }}
+                                    </td>
+                                    <td scope="row">
+                                        {{ student.birth }}
+                                    </td>
+
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+
+</template>
+
 <script>
 
     export default {
+
         data: function () {
             return {
-                level: {},
-                students : {},
-                ID: this.$route.params.id,
-
+                level: ""
             }
         },
         methods: {
             async getlevel() {
-                await axios.get("/api/levels/" + this.ID).then(res => {
-                    this.level = res.data.level
-                    console.log(res.data)
+                await axios.get(`/api/levels/${this.$route.params.id}`).then(res => {
 
-                }).catch(err => {
-                    console.log(err)
+                    this.level = res.data.data
+
                 })
             }
 
         },
-        watch: {
-            ID: function () {
-                this.getlevel()
-            }
-        },
         mounted() {
             this.getlevel()
-            document.title = "Store | level - " + this.ID
+            document.title = "LMS | level"
 
         }
 
     }
 
 </script>
-
-<template>
-    <!-- Begin Page Content -->
-    <div class="container-fluid">
-        <!-- Page header -->
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">levels</h1>
-        </div>
-        <!-- Content Row -->
-        <div class="row">
-            <div class="col-md-12 col-lg-12 col-sm-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h6>
-                            level Number <strong>{{level.id}}</strong>
-                        </h6>
-                        <h6>student <strong>{{student.name}}</strong>
-                        </h6>
-                    </div>
-                    <div class="card-body table-responsive">
-                        <table class="table table-bleveled table-sm">
-                            <thead>
-                                <td scope="col">#</td>
-                                <td scope="col">Product</td>
-                                <td scope="col">Quantity</td>
-                                <td scope="col">Price</td>
-                                <td scope="col">leveled at</td>
-                            </thead>
-                            <tr v-for="(product , index) in level.products" :key="index">
-                                <td>{{(index + 1)}}</td>
-                                <td>
-                                    <router-link :to="{name : 'admin.products.product'  ,params :{ id :product.id}}">
-                                        {{product.title}}</router-link>
-                                </td>
-                                <td>{{product.pivot.quantity}}</td>
-                                <td>&dollar;{{currency(product.price)}}</td>
-                                <td>{{formateDate(level.created_at) }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">Total Price</td>
-                                <td colspan="1">&dollar;{{currency(level.total_price)}}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">Status</td>
-                                <td colspan="1" class="m-1">
-                                    <select v-model="status" class="form-select form-select-xsm ">
-                                        <option value="shipping" :selected="level.status == 'shipping'">
-                                            Shipping</option>
-                                        <option value="canceled" :selected="level.status == 'canceled'">
-                                            Canceled</option>
-                                        <option value="shipped" :selected="level.status == 'shipped'">Shipped</option>
-
-                                    </select>
-
-                                </td>
-                            </tr>
-
-                        </table>
-                    </div>
-
-
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-
-</template>
-
 
 <style>
 

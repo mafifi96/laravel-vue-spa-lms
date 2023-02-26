@@ -44,7 +44,11 @@
                                     <tr>
                                         <td>{{course.id}}</td>
                                         <td>{{course.code}}</td>
-                                        <td>{{course.name}}</td>
+                                        <td>
+                                            <router-link :to="{
+                                                name: 'course' ,
+                                                params : { id : this.$route.params.cid }}"> {{course.name}} </router-link>
+                                        </td>
                                         <td>{{course.created_at}}</td>
                                     </tr>
 
@@ -124,7 +128,7 @@
 
 </template>
 <script>
-import { nextTick } from 'vue';
+import Swal from 'sweetalert2'
 
     export default {
         data: function () {
@@ -169,14 +173,9 @@ import { nextTick } from 'vue';
 
         },
         mounted() {
+
             this.getcourse()
-/*
-            nextTick(()=>{
 
-                this.getcourse()
-
-            }) */
-            //this.getStudents()
             document.title = "Store | Course"
         }
     }

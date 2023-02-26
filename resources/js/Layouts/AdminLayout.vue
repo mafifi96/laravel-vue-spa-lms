@@ -109,8 +109,8 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" @click.prevent="dropdownToggle()" id="userDropdown"
                                 role="button" data-toggle="dropdown">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{  }}</span>
-                                <img class="img-profile rounded-circle" src="/imgs/undraw_profile.svg">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"></span>
+                                <img class="img-profile rounded-circle" :src="profilePic">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -132,7 +132,7 @@
                                 <form method="POST" action="/logout">
 
                                     <a class="btn btn-primary dropdown-item" data-toggle="modal"
-                                        data-target="#logoutModal" @click.once.prevent="logout()">
+                                        data-target="#logoutModal" @click.once.prevent>
                                         <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                         Logout
                                     </a>
@@ -157,20 +157,6 @@
                 <div class="container my-auto">
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12 ">
-                          <!--   <ul class="list-style-type-none d-flex justify-content-center p-0"
-                                style="list-style: none;">
-                                <li class="m-2"><a class="text-decoration-none font-size-2" style="color: #555"
-                                        href="https://www.facebook.com/silent.e3gle"><i
-                                            class="fab fa-facebook-f"></i></a></li>
-                                <li class="m-2"><a class="text-decoration-none font-size-2" style="color: #555"
-                                        href="https://github.com/mafifi96/"><i class="fab fa-github"></i></a></li>
-                                <li class="m-2"><a class="text-decoration-none font-size-2" style="color: #555"
-                                        href="https://www.linkedin.com/in/mafifi-fstack-dev/"><i
-                                            class="fab fa-linkedin"></i></a></li>
-                                <li class="m-2"><a class="text-decoration-none font-size-2" style="color: #555"
-                                        href="https://wa.me/+201093852164"><i class="fab fa-whatsapp"></i></a></li>
-                            </ul>
-                             -->
                             <p class="text-center text-monospace text-capitalize py-2">
                                 LMS System</p>
                         </div>
@@ -188,24 +174,12 @@
 
 <script>
 
+import profilePic from '../../assets/imgs/undraw_profile.svg'
+
     export default {
 
         methods: {
 
-            async logout() {
-                await axios.post('/api/logout').then(res => {
-                    window.axios.defaults.headers.common = {
-                        'Authorization': ''
-                    }
-
-                    this.$router.push({
-                        name: "login"
-                    })
-
-                }).catch(err => {
-                    console.log(err)
-                })
-            },
             dropdownToggle() {
 
                 $(".dropdown-menu").slideToggle();

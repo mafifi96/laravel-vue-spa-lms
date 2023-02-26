@@ -4,7 +4,7 @@
 
         <!-- Page header -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">courses</h1>
+            <h1 class="h3 mb-0 text-gray-800 capitalize">courses</h1>
 
         </div>
 
@@ -88,6 +88,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
 
 import Errors from '../../../inc/ValidationErrors.vue'
 
@@ -124,6 +125,8 @@ import Errors from '../../../inc/ValidationErrors.vue'
                     grades : this.grades
                 }).then(res => {
 
+                    console.log(res)
+
                     Swal.fire({
                             title: 'Saved!',
                             icon: 'success',
@@ -138,12 +141,12 @@ import Errors from '../../../inc/ValidationErrors.vue'
                 }]
                 }).catch(err => {
                     console.log(err)
-                    if(err && err.response.data & err.response.data.errors)
-                    {
-                        this.errors = Object.values(err.response.data.errors)
-                    }else{
-                        this.errors = err.response.data.message || "something went wrong"
-                    }
+
+                    if (err && err.response.data) {
+                            this.errors = err.response.data
+                        } else {
+                            this.errors = err.response.data.message || "something is wrong..!"
+                        }
                 }).finally(()=>{
                     this.processing = false
                 })

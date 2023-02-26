@@ -116,14 +116,31 @@ const routes = [
     },
     {
         path: '/levels/:id(\\d+)',
-        name: 'Level',
+        name: 'level',
         component: Level,
         meta : {
             middleware : "admin",
             layout : "AdminLayout"
         }
     },
-
+    {
+        path: '/levels/create',
+        name: 'levels.create',
+        component: LevelCreate,
+        meta : {
+            middleware : "admin",
+            layout : "AdminLayout"
+        }
+    },
+    {
+        path: '/levels/:id(\\d+)/edit',
+        name: 'levels.edit',
+        component: LevelEdit,
+        meta : {
+            middleware : "admin",
+            layout : "AdminLayout"
+        }
+    },
 
 ];
 

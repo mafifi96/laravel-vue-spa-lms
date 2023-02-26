@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <!-- Page header -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">courses</h1>
+            <h1 class="h3 mb-0 text-gray-800 capitalize">courses</h1>
 
             <router-link :to="{name : 'course.create'}"
                 class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
@@ -48,6 +48,10 @@
 
 </template>
 <script>
+
+import DataTable from 'datatables.net'
+import 'datatables.net-dt/css/jquery.dataTables.min.css'
+
     export default {
 
         methods:{
@@ -62,7 +66,7 @@
 
             let table = new DataTable("#courses", {
 
-                "ajax": "http://127.0.0.1:8000/api/courses",
+                "ajax": "/api/courses",
                 "columns": [{
                         "data": "id"
                     },

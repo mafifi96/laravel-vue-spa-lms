@@ -9,23 +9,21 @@
         <title>Laravel</title>
         <link rel="stylesheet" href="{{asset("css/all.min.css")}}">
         <link rel="stylesheet" href="{{asset("css/fontawesome.min.css")}}">
+
         <script src="{{asset("js/jquery-3.6.0.js")}}"></script>
         <script src="{{asset("js/fontawesome.min.js")}}"></script>
+        <link rel="stylesheet" href="{{asset("build/assets/app-87c32b3e.css")}}">
 
-        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.css">
-
-         @vite('resources/css/app.css')
+         <!-- @vite('resources/css/app.css')
+          -->
     </head>
     <body class="antialiased">
         <div id="app">
             <App></App>
         </div>
-        @vite('resources/js/app.js')
-
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.js"></script>
-
+        <!-- @vite('resources/js/app.js')
+ -->
+ <scrip src="{{asset("build/assets/app-e786d88a.js")}}"></scrip>
 <noscript>
     please enable js to continue
 </noscript>

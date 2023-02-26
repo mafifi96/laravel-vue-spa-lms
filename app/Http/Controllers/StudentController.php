@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StudentRequest;
 use App\Models\Course;
 use Yajra\DataTables\Facades\DataTables;
+use App\Http\Requests\UpdateStudentRequest;
 
 class StudentController extends Controller
 {
@@ -56,7 +57,7 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StudentRequest $request, Student $student)
+    public function update(UpdateStudentRequest $request, Student $student)
     {
         $validated = $request->validated();
 

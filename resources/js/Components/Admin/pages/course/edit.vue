@@ -4,7 +4,7 @@
 
         <!-- Page header -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">courses</h1>
+            <h1 class="h3 mb-0 text-gray-800 capitalize">Courses</h1>
 
         </div>
 
@@ -15,7 +15,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h6 class="h6 text-muted">Create New course</h6>
+                        <h6 class="h6 text-muted">Edit course</h6>
                         <Errors v-if="errors" :errors="errors"></Errors>
 
                     </div>
@@ -88,6 +88,9 @@
 </template>
 
 <script>
+
+import Swal from 'sweetalert2'
+
     import Errors from '../../../inc/ValidationErrors.vue'
 
     export default {
@@ -119,7 +122,11 @@
                 })
             },
             async getcourse() {
-                await axios.get("/api/courses/" + this.$route.params.id).then(res => {
+                await axios.get("/api/courses/" + this.$route.params.id , {
+                    headers : {
+                        'x-edit' : "true"
+                    }
+                }).then(res => {
                     this.course = res.data.data.course;
                     this.grades = res.data.data.grades;
 
@@ -171,7 +178,7 @@
         },
         mounted() {
             this.getcourse()
-            document.title = "Store | Create course"
+            document.title = "Store | Edit course"
         }
 
     }

@@ -5,7 +5,7 @@
 
             <!-- Page header -->
             <div class="d-sm-flex align-items-center justify-content-end mb-4">
-
+                <h1 class="h3 mb-0 text-gray-800 capitalize">Students</h1>
                 <router-link :to="{name :'students.create'}" class="btn btn-sm btn-primary shadow-sm mx-2"><i
                         class="fas fa-plus fa-sm "></i>
                     Create student</router-link>
@@ -55,13 +55,18 @@
                         <div class="card-header">
                             <h6>Add Degree To Student</h6>
                             <p class="text-capitalize text-sm text-slate-400">
-                                enrolled in
                                 <strong v-if="student.courses_count != 0">
+                                    enrolled in
                                     {{ student.courses_count }}
-                                </strong>
+
                                 {{
                                 (student.courses_count > 1) ? " Courses" : "Course"
                             }}
+                                </strong>
+                                <strong v-else>
+                                not enrolled in any courses
+                                </strong>
+
 
                             </p>
                         </div>
@@ -174,7 +179,7 @@
 
                     this.getCourses()
                     this.getstudent()
-                    event.target.textContent = "disenroll"
+                    event.target.textContent = "Disenroll"
 
                 }).catch((err) => {
 

@@ -2,11 +2,11 @@
     <div class="container-fluid">
         <!-- Page header -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">students</h1>
+            <h1 class="h3 mb-0 text-gray-800 capitalize">students</h1>
 
             <router-link :to="{name : 'students.create'}"
-                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                    class="fas fa-plus fa-sm text-capitalize"></i>
+                class="d-none d-sm-inline-block capitalize btn btn-sm btn-primary shadow-sm"><i
+                    class="fas fa-plus fa-sm "></i>
                 add student</router-link>
         </div>
 
@@ -45,14 +45,13 @@
 
         </div>
 
-        <div class="">
-
-        </div>
-
     </div>
 
 </template>
 <script>
+
+import DataTable from 'datatables.net'
+import 'datatables.net-dt/css/jquery.dataTables.min.css'
 
     export default {
         methods: {
@@ -65,7 +64,7 @@
             document.title = "LMS | students"
 
             let studentsTable = new DataTable("#students", {
-                "ajax": "http://127.0.0.1:8000/api/students",
+                "ajax": "/api/students",
                 "columns": [{
                         "data": "id"
                     },
@@ -113,5 +112,8 @@
 </script>
 
 <style scoped>
+
+
+
 
 </style>

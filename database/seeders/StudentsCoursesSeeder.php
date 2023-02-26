@@ -22,7 +22,7 @@ class StudentsCoursesSeeder extends Seeder
 
         $Courses->each(function($Course) use ($students){
 
-            $Course->students()->sync($students);
+            $Course->students()->syncWithoutDetaching($students);
 
         });
 

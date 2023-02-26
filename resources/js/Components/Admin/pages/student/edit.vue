@@ -5,7 +5,7 @@
 
             <!-- Page header -->
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                <h1 class="h3 mb-0 text-gray-800">Students</h1>
+                <h1 class="h3 mb-0 text-gray-800 capitalize">Students</h1>
 
             </div>
 
@@ -68,6 +68,9 @@
 </template>
 
 <script>
+
+    import Swal from 'sweetalert2'
+
     import Errors from '../../../inc/ValidationErrors.vue'
 
     export default {
@@ -91,11 +94,12 @@
             async updateStudent() {
                 this.processing = true
 
-                await axios.post("/api/students", {
+                await axios.post(`/api/students/${this.student.id}`, {
                         name : this.student.name,
                         email : this.student.email ,
                         birth : this.student.birth,
-                        level_id : this.student.level_id
+                        level_id : this.student.level_id,
+                        _method : "PATCH"
                      })
                     .then(res => {
 

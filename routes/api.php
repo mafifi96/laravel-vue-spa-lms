@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     StudentController,
     CourseController,
+    DashboardController,
     GradeController,
     LevelController,
-    AuthController
 };
 
 
@@ -23,13 +23,7 @@ use App\Http\Controllers\{
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-
+Route::get('/dashboard' , DashboardController::class);
 Route::apiResource('courses' , CourseController::class);
 Route::apiResource('grades' , GradeController::class);
 Route::apiResource('students' , StudentController::class);
@@ -38,8 +32,3 @@ Route::post('/course/enroll' , [CourseController::class , 'enroll']);
 Route::post('/course/disenroll' , [CourseController::class , 'disenroll']);
 Route::get("/courses/{course}/students/{student}", [CourseController::class , 'StudentCourse']);
 Route::post("/students/{student}/grades" , [StudentController::class , 'gradesCreate']);
-Route::middleware('auth:sanctum')->group(function(){
-
-});
-
-Route::post("/login", [AuthController::class, 'login']);

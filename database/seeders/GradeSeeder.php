@@ -15,17 +15,14 @@ class GradeSeeder extends Seeder
      */
     public function run()
     {
-        $grades = ['pracical exam','oral exam','midterm exam' , 'final exam'];
+        $grades = ['quize','oral','midterm' , 'final'];
 
         Course::all()->each(function($course) use ($grades){
 
-            collect($grades)->each(function($grade) use ($course){
-                $course->grades()->create([
-                    'name'=> $grade,
-                    'maxDegree' => fake()->randomElement([50,100])
-                ]);
-                
-            });
+            $course->grades()->create([
+                'name' => fake()->randomElement($grades),
+                'maxDegree' => fake()->randomElement([10,20,30,40,50,100])
+            ]);
         });
     }
 }

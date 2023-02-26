@@ -9,8 +9,7 @@ use App\Models\Grade;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Database\Eloquent\Builder;
-
+use App\Http\Requests\UpdateCoursRequest;
 
 class CourseController extends Controller
 {
@@ -22,12 +21,11 @@ class CourseController extends Controller
     public function index(Request $request)
     {
 
-        if($request->hasHeader('x-students'))
-        {
-            return sendData(Course::withCount(['students','grades'])->get());
+        if ($request->hasHeader('x-students')) {
+            return sendData(Course::withCount(['students', 'grades'])->get());
         }
 
-        return datatables(Course::withCount(['students','grades'])->get())->make(true);
+        return datatables(Course::withCount(['students', 'grades'])->get())->make(true);
     }
 
     /**
@@ -39,17 +37,21 @@ class CourseController extends Controller
     public function store(CourseRequest $request)
     {
 
+        //return $request->validated();
 
         $validated = $request->validated();
 
-        //return $validated;
-        $course = Course::create(array_merge($validated , ['code' => uid()]));
+        $course = Course::create([
+            'code' => uid(),
+            'name' => $validated['name'],
+            'description' => $validated['description']
+        ]);
 
-        if($request->has('grades')){
+        if ($request->has('grades')) {
             $course->grades()->createMany($validated['grades']);
         }
 
-        return sendData(data : $course , message: "course stored successfully");
+        return sendData($course);
     }
 
     /**
@@ -61,11 +63,16 @@ class CourseController extends Controller
     public function show(Course $course)
     {
 
-        $grades = Grade::WhereBelongsTo($course)->get();
+        if (request()->hasHeader('x-edit')) {
 
-        $grades->load('students:id,code,name');
+            $grades = Grade::WhereBelongsTo($course)->get();
 
-         return sendData(['course' => $course->loadCount(['students','grades']), 'grades' => $grades]);
+            $grades->load('students:id,code,name');
+
+            return sendData(['course' => $course->loadCount(['students', 'grades']), 'grades' => $grades]);
+        }
+
+        return sendData(['course' => $course->load(['grades.students', 'students'])->loadCount(['students', 'grades'])]);
     }
 
     /**
@@ -75,7 +82,7 @@ class CourseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(CourseRequest $request,Course $course)
+    public function update(UpdateCoursRequest $request, Course $course)
     {
 
 
@@ -86,22 +93,17 @@ class CourseController extends Controller
             'description' => $validated['description']
         ]);
 
-        if(!empty($validated['grades'])){
+        if (!empty($validated['grades'])) {
 
 
-           collect($validated['grades'])->each(function($grade) use ($course){
+            collect($validated['grades'])->each(function ($grade) use ($course) {
 
-            if($course->grades->find($grade['id']))
-            {
-                $course->grades->find($grade['id'])->update($grade);
-
-            }else{
-                $course->grades()->create($grade);
-            }
-
-
-
-           });
+                if ($course->grades->find($grade['id'])) {
+                    $course->grades->find($grade['id'])->update($grade);
+                } else {
+                    $course->grades()->create($grade);
+                }
+            });
         }
 
         return sendData(message: "updated successfully");
@@ -126,8 +128,7 @@ class CourseController extends Controller
 
         $course->students()->syncWithoutDetaching($student);
 
-        return sendData(message:"enrolled successfully");
-
+        return sendData(message: "enrolled successfully");
     }
 
     public function disenroll(Request $request)
@@ -138,16 +139,13 @@ class CourseController extends Controller
 
         $course->students()->detach($student);
 
-        return sendData(message:"the student is no longer in this course");
-
+        return sendData(message: "the student is no longer in this course");
     }
 
-    public function StudentCourse(Course $course , Student $student)
+    public function StudentCourse(Course $course, Student $student)
     {
         $grades = $course->grades;
 
-        return sendData(['course' => $course, 'grades' => $grades , 'student' => $student]);
+        return sendData(['course' => $course, 'grades' => $grades, 'student' => $student]);
     }
-
-
 }

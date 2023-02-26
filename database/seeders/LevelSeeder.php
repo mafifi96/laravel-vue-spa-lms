@@ -15,7 +15,7 @@ class LevelSeeder extends Seeder
      */
     public function run()
     {
-        $levels = collect(['level 1' , 'level 2' , 'level 3' , 'level 4']);
+        $levels = collect(['level 1' , 'level 2' , 'level 3' , 'level 4' , 'level 5']);
 
         $levels->each(function($level){
             Level::create([

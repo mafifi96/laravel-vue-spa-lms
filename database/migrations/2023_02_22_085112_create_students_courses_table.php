@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('students_courses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("student_id")->constrained("students")->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId("student_id")->constrained("students")->cascadeOnUpdate();
             $table->foreignId("course_id")->constrained("courses")->cascadeOnUpdate();
             $table->timestamps();
         });
