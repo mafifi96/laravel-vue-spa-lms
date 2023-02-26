@@ -16,7 +16,9 @@
 
 ## Second
 
-- After download the project in your prefer directory run following commands :
+- After download the project in your prefer directory ,
+- Create Database (lms) in your mysql ,
+- run following commands :
 ```
  composer install
  php artisan migrate
