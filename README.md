@@ -16,7 +16,7 @@
 
 ## Second
 
-- After download the project in your prefer directory ,
+- After download the project in your prefer directory , ( git clone https://github.com/mafifi96/laravel-vue-spa-lms.git )
 - Create Database (lms) in your mysql ,
 - run following commands :
 ```
