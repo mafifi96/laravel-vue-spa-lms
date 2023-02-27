@@ -102,6 +102,11 @@ class CourseController extends Controller
                     $course->grades->find($grade['id'])->update($grade);
                 } else {
                     $course->grades()->create($grade);
+                    $course->students()->each(function($student) use ($grades){
+
+                        $student->grades()->syncWithoutDetaching([ $grades->id => ['degree' => 0]]);
+
+                    });
                 }
             });
         }
